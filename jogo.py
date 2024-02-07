@@ -16,6 +16,9 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 
 
+
+
+
 def colisão(rect1,rect2):
     r1x = rect1[0][0]
     r1y = rect1[0][1]
@@ -47,6 +50,7 @@ class StartMenuWidget(Widget):
             on_press=self.start_game
         )
         # Imagens de Fundo e Botão
+        Window.size = (800, 600)
         self.background_image = Image(source="Assets/menubg.png", size=(800,900), pos=(0,-100),)
         self.menu_text = Image(source="Assets/menutxt.png", size=(500,500), pos=(160,150))
         self.add_widget(self.background_image)
@@ -77,6 +81,7 @@ class JogoWidget(Widget):
         self.recorde = 0
         self.recorde_label = Label(text=f"Recorde: {self.recorde}", font_size=32, pos=(40, 10))
         self.collision_occurred = False
+        self.difficulty_counter = 0  # Add this line
 
 
         with self.canvas:
@@ -87,7 +92,6 @@ class JogoWidget(Widget):
          self.add_widget(self.recorde_label)
          self.flash = Image(source="Assets/flash.png", pos=(00,00),size=(1000,1000), color=(1,1,1,0))
     
-         
 
         self.teclaPressionada = set()
         Clock.schedule_interval(self.move_step,0)
@@ -98,6 +102,8 @@ class JogoWidget(Widget):
         self.musica.play()
 
         Clock.schedule_interval(self.move_inimigo, 1.0 / 60.0)
+
+
 
     def _on_keyboard_closed(self):
         self._keyboard.unbind(on_key_down=self._on_key_down)
@@ -153,8 +159,7 @@ class JogoWidget(Widget):
             self.surgir()
             Clock.schedule_once(self.sumir, 0.2)
             Clock.schedule_once(self.reset_collision, 1.5)
-
-        
+            self.difficulty_counter += 1
 
         else:
             print("Não tocou")
@@ -165,6 +170,7 @@ class JogoWidget(Widget):
 
     def reset_collision(self, dt):
         self.collision_occurred = False
+
 
 class MeuApp(App):
     def build(self):
